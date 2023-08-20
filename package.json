@@ -1,0 +1,17 @@
+{
+  "name": "worker-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "test_with_worker_service.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "kafka": "^0.2.3",
+    "kafka-node": "^5.0.0",
+    "mongoose": "^7.4.3"
+  }
+}
