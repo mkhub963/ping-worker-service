@@ -84,8 +84,8 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(3001, () => {
-  console.log("WebSocket server listening on port 3001");
+server.listen(8003, () => {
+  console.log("WebSocket server listening on port 8003");
 });
 
 // Handle incoming messages
