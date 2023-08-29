@@ -3,7 +3,7 @@ const kafka = require("kafka-node");
 const http = require("http");
 const socketIo = require("socket.io");
 const Redis = require("ioredis");
-const { IPStatus } = require("./model");
+// const { IPStatus } = require("./model");
 
 const redis = new Redis(); // Default Redis connection to localhost:6379
 
@@ -24,16 +24,16 @@ mongoose
     console.log("DB Error => ", err);
   });
 
-// // MongoDB Schema and Model
-// const ipStatusSchema = new mongoose.Schema({
-//   ip: String,
-//   isDown: Boolean,
-//   lastUp: Date,
-//   lastDown: Date,
-//   email: String,
-//   wasDown: { type: Boolean, default: false },
-// });
-// const IPStatus = mongoose.model("IPStatus", ipStatusSchema);
+// MongoDB Schema and Model
+const ipStatusSchema = new mongoose.Schema({
+  ip: String,
+  isDown: Boolean,
+  lastUp: Date,
+  lastDown: Date,
+  email: String,
+  wasDown: { type: Boolean, default: false },
+});
+const IPStatus = mongoose.model("IPStatus", ipStatusSchema);
 
 const messageLogSchema = new mongoose.Schema({
   messageId: String,
