@@ -17,7 +17,7 @@ const io = socketIo(server, {
 });
 
 const redisAdapter = createAdapter({
-  host: "103.112.212.237",
+  host: "127.0.0.1",
   port: 6379,
   auth_pass: "ACNS3@123#uptimemonitor",
 });
@@ -90,12 +90,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  // Clean up Redis connection on client disconnect
-  socket.on("disconnect", () => {
-    console.log("Client disconnected");
-    redisSubscriber.quit();
-  });
-});
+
 
 server.listen(8003, () => {
   console.log("WebSocket server listening on port 8003");
@@ -207,6 +202,13 @@ kafkaConsumer.on("message", (message) => {
   } else {
     console.error("Empty message received or not a valid string:", message);
   }
+});
+
+  // Clean up Redis connection on client disconnect
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+    redisSubscriber.quit();
+  });
 });
 
 // Handle errors
