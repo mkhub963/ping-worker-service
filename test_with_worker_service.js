@@ -4,6 +4,7 @@ const http = require("http");
 const socketIo = require("socket.io");
 const Redis = require("ioredis");
 // const { IPStatus } = require("./model");
+const { createAdapter } = require("socket.io-redis");
 
 const redis = new Redis(); // Default Redis connection to localhost:6379
 // WebSocket server setup for client communication
@@ -14,6 +15,13 @@ const io = socketIo(server, {
     methods: ["GET", "POST"],
   },
 });
+
+const redisAdapter = createAdapter({
+  host: "103.112.212.237",
+  port: 6379,
+  auth_pass: "ACNS3@123#uptimemonitor",
+});
+io.adapter(redisAdapter);
 
 // MongoDB connection
 mongoose
@@ -68,8 +76,6 @@ const kafkaConsumer = new kafka.Consumer(
   [{ topic: "ip-status-updates", partition: 0 }],
   { autoCommit: true }
 );
-
-
 
 io.on("connection", (socket) => {
   console.log("Client connected");
