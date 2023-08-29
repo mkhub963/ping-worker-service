@@ -4,7 +4,7 @@ const http = require("http");
 const socketIo = require("socket.io");
 const Redis = require("ioredis");
 // const { IPStatus } = require("./model");
-const { createAdapter } = require("socket.io-redis");
+// const { createAdapter } = require("socket.io-redis");
 
 const redis = new Redis(); // Default Redis connection to localhost:6379
 // WebSocket server setup for client communication
@@ -16,12 +16,12 @@ const io = socketIo(server, {
   },
 });
 
-const redisAdapter = createAdapter({
-  host: "103.112.212.237",
-  port: 6379,
-  auth_pass: "ACNS3@123#uptimemonitor",
-});
-io.adapter(redisAdapter);
+// const redisAdapter = createAdapter({
+//   host: "103.112.212.237",
+//   port: 6379,
+//   auth_pass: "ACNS3@123#uptimemonitor",
+// });
+// io.adapter(redisAdapter);
 
 // MongoDB connection
 mongoose
@@ -173,6 +173,12 @@ kafkaConsumer.on("message", (message) => {
           { upsert: true, new: true }
         )
           .then((document) => {
+            // Publish the status update to a Redis channel
+            redis.publish("ip-status-updates", JSON.stringify(ipStatusUpdate));
+
+            // Emit the update event to connected clients
+            io.emit("update", JSON.stringify(ipStatusUpdate)); // This sends the update to all connected clients
+
             console.log(`Database updated successfully for ${status} status`);
           })
           .catch((error) => {
@@ -181,9 +187,6 @@ kafkaConsumer.on("message", (message) => {
               error.message
             );
           });
-
-        // Publish the status update to a Redis channel
-        redis.publish("ip-status-updates", JSON.stringify(ipStatusUpdate));
       }
 
       const messageLog = new MessageLog({
