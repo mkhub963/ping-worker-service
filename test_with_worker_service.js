@@ -6,6 +6,9 @@ const Redis = require("ioredis");
 // const { IPStatus } = require("./model");
 // const { createAdapter } = require("socket.io-redis");
 
+// Define a variable to keep track of the current status for each IP
+const currentStatus = {};
+
 const redis = new Redis(); // Default Redis connection to localhost:6379
 // WebSocket server setup for client communication
 const server = http.createServer();
@@ -175,9 +178,12 @@ kafkaConsumer.on("message", (message) => {
           .then((document) => {
             // Publish the status update to a Redis channel
             redis.publish("ip-status-updates", JSON.stringify(ipStatusUpdate));
-
-            // Emit the update event to connected clients
-            io.emit("update", JSON.stringify(ipStatusUpdate)); // This sends the update to all connected clients
+            // Check if the status has changed for this IP
+            if (currentStatus[ip] !== status) {
+              // Emit the update event to connected clients
+              io.emit("update", JSON.stringify(ipStatusUpdate));
+              currentStatus[ip] = status; // Update the current status
+            }
 
             console.log(`Database updated successfully for ${status} status`);
           })
